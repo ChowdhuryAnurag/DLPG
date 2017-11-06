@@ -1,0 +1,14 @@
+# .mat files
+*.mat
+
+# .h5 files
+*.h5
+
+# .csv files
+*.csv
+
+# .mp3 files
+*.mp3
+
+# .wav files
+*.wav
