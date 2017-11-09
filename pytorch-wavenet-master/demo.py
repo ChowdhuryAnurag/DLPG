@@ -14,6 +14,7 @@ os.chdir('/research/iprobe-tmp/chowdh51/workspace/SRDAS/Python/DLPG/pytorch-wave
 print('Setting current working directory to ...')
 print(os.getcwd())
 
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 import time
 
@@ -38,6 +39,7 @@ model = WaveNetModel(num_blocks=2,
               num_classes=256)
 print('model: ', model)
 print('scope: ', model.scope)
+model = model.cuda()
 
 
 # In[11]:
@@ -98,28 +100,36 @@ print('Training took {} seconds.'.format(toc-tic))
 start_tensor = data.get_minibatch([12345])[0].squeeze()
 print('generate...')
 tic = time.time()
-# generated = model.generate(start_data=start_tensor, num_generate=200)
-generated = model.fast_generate(40000)
+model = model.cpu()
+generated = model.generate(start_data=start_tensor, num_generate=200)
+# generated = model.fast_generate(40000)
 toc = time.time()
 print('Generating took {} seconds.'.format(toc-tic))
 
 
 # In[ ]:
-
+len(generated)
 fig = plt.figure()
 plt.plot(generated)
-
+import scipy.io as sio
+sio.wavfile.write('bach_regenrated_16k.wav', 16000, np.array(generated))
 
 # In[ ]:
 
 print('generate...')
 tic = time.time()
-[generated, support_generated] = model.fast_generate(40000)
+generated = model.fast_generate(40000)
 toc = time.time()
 print('Generating took {} seconds.'.format(toc-tic))
 
 fig = plt.figure()
-plt.plot(support_generated)
+plt.plot(generated)
+
+len(generated)
+fig = plt.figure()
+plt.plot(generated)
+import scipy.io as sio
+sio.wavfile.write('bach_regenrated_16k.wav', 16000, np.array(generated))
 
 
 # In[6]:

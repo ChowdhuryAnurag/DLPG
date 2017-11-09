@@ -21,6 +21,7 @@ class WaveNetModel(nn.Module):
         super(WaveNetModel, self).__init__()
 
         self.num_classes = num_classes
+        self.sampled_generation = True
 
         main = nn.Sequential()
 
@@ -208,6 +209,9 @@ class Optimizer:
             minibatch_indices = indices[i * m:(i + 1) * m]
             inputs, targets = data.get_minibatch(minibatch_indices)
             targets = targets.view(targets.size(0) * targets.size(1))
+
+            inputs = inputs.cuda()
+            targets = targets.cuda()
 
             output = self.model(Variable(inputs))
             loss = F.cross_entropy(output.squeeze(), Variable(targets))
